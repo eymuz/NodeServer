@@ -1,22 +1,25 @@
+// server.js
 import { WebSocketServer } from "ws";
 
-const port = process.env.PORT || 10000; // Render otomatik PORT verir
-const wss = new WebSocketServer({ port });
-
-console.log("WS Server listening on port", port);
+const wss = new WebSocketServer({ port: 2015 });
 
 wss.on("connection", (ws) => {
-  console.log("Yeni biri bağlandı");
+  console.log("new client connected");
 
-  ws.on("message", (msg) => {
-    console.log("Mesaj:", msg.toString());
-    // herkese ilet
+  ws.on("message", (message) => {
+    console.log(`message recived: ${message}`);
+
+    // Gelen mesajı diğer tüm clientlere yay
     wss.clients.forEach((client) => {
-      if (client.readyState === 1) client.send(msg.toString());
+      if (client !== ws && client.readyState === ws.OPEN) {
+        client.send(message.toString());
+      }
     });
   });
 
   ws.on("close", () => {
-    console.log("Biri çıktı");
+    console.log("Client is disconnected");
   });
 });
+
+console.log("started websocket 2015");
