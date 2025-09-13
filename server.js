@@ -1,7 +1,7 @@
-// server.js
 import { WebSocketServer } from "ws";
 
-const wss = new WebSocketServer({ port: 2015 });
+const PORT = process.env.PORT || 2015;  // Render'da genelde env PORT kullanılır
+const wss = new WebSocketServer({ port: PORT });
 
 wss.on("connection", (ws) => {
   console.log("new client connected");
